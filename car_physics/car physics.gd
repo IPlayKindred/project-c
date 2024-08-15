@@ -51,6 +51,7 @@ extends RigidBody3D
 @export var spring_inwardness:float = 0
 
 @export var spring_len = 0.4
+@export var rear_spring_len = 0.4
 @export var min_spring_len = 0.4
 
 
@@ -196,7 +197,6 @@ func _ready():
 		drivable = 1
 	else: 
 		drivable = 0
-		
 	
 
 
@@ -629,19 +629,19 @@ func process_suspension(delta):
 		distances[w] = current_spring_len
 		
 		if current_spring_len < min_spring_len:
-			current_spring_len = clamp(current_spring_len, 0, spring_len)
-			current_compression = 1 - (current_spring_len / spring_len)
+			current_spring_len = clamp(current_spring_len, 0, rear_spring_len)
+			current_compression = 1 - (current_spring_len / rear_spring_len)
 			current_spring_force = rear_spring_force * current_compression
 			
 			if w == 2:
 				var antiroll_factor = (current_compression - compressions[3])
 				
-				var antiroll_force = anti_roll * antiroll_factor
+				var antiroll_force = rear_anti_roll * antiroll_factor
 				current_spring_force += antiroll_force
 			else:
 				var antiroll_factor = (current_compression - compressions[2])
 				
-				var antiroll_force = anti_roll * antiroll_factor
+				var antiroll_force = rear_anti_roll * antiroll_factor
 				current_spring_force += antiroll_force
 			
 			
@@ -936,7 +936,7 @@ func wheel_cf(number):
 
 
 func wheel_cfy(number):
-	return CFy * traction_factor[number]
+	return CFy * traction_factor[number]	
 
 var selection = 0
 
