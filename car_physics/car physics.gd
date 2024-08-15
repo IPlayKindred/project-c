@@ -270,24 +270,24 @@ func _physics_process(delta) -> void:
 	#LATERAL GRIP
 	
 	for w in [0, 1]:
-		current_brush = brushLat(slip_ratio[w], side_slip[w], weight_on_wheels[w])
+		current_brush = brushLat(slip_ratio[w], side_slip[w], weight_on_wheels[w], w)
 		
 		apply_force(side_steer_dir * current_brush * wgrounded[w], (wheel_dir * distances[w]) + raycast[w].global_transform.origin - self.global_transform.origin)
 	
 	for w in [2, 3]:
-		current_brush = brushLat(slip_ratio[w], side_slip[w], weight_on_wheels[w])
+		current_brush = brushLat(slip_ratio[w], side_slip[w], weight_on_wheels[w], w)
 		
 		apply_force(side_steer_rear_dir * current_brush * wgrounded[w], (wheel_dir * distances[w]) + raycast[w].global_transform.origin - self.global_transform.origin)
 	
 	#LONG GRIP
 	
 	for w in [0, 1]:
-		current_brush = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w])
+		current_brush = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w)
 		
 		apply_force(-forward_steer_dir * current_brush * wgrounded[w], (wheel_dir * distances[w]) + raycast[w].global_transform.origin - self.global_transform.origin)
 	
 	for w in [2, 3]:
-		current_brush = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w])
+		current_brush = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w)
 		
 		apply_force(-forward_steer_rear_dir * current_brush * wgrounded[w], (wheel_dir * distances[w]) + raycast[w].global_transform.origin - self.global_transform.origin)
 	
@@ -686,7 +686,7 @@ func rwd(delta):
 	for w in [0, 1]:
 		#returns force in newtons
 		
-		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w]) * wgrounded[w]
+		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w) * wgrounded[w]
 		
 		
 		torque_on_wheel = frc_on_wheel * tire_radius
@@ -708,7 +708,7 @@ func rwd(delta):
 		
 		
 		
-		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w]) * wgrounded[w]
+		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w) * wgrounded[w]
 		
 		
 		
@@ -769,7 +769,7 @@ func fwd(delta):
 	for w in [2, 3]:
 		#returns force in newtons
 		
-		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w]) * wgrounded[w]
+		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w) * wgrounded[w]
 		
 		
 		torque_on_wheel = frc_on_wheel * tire_radius
@@ -793,7 +793,7 @@ func fwd(delta):
 		
 		
 		
-		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w]) * wgrounded[w]
+		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w) * wgrounded[w]
 		
 		
 		
@@ -854,7 +854,7 @@ func awd(delta):
 	for w in [0, 1, 2, 3]:
 		
 		
-		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w]) * wgrounded[w]
+		frc_on_wheel = brushLong(slip_ratio[w], side_slip[w], weight_on_wheels[w], w) * wgrounded[w]
 		
 		
 		
@@ -906,37 +906,37 @@ var Ca = 500000 * tire_stiffness # cornering stiffness of the tyre
 
 var wav
 
-func wave(longs, lats, Fz):
+func wave(longs, lats, Fz, number):
 	
-	return sqrt(pow((Cs * longs) / (3 * wheel_cf() * Fz), 2) + pow((Cs * lats) / (3 * wheel_cf() * Fz), 2))
+	return sqrt(pow((Cs * longs) / (3 * wheel_cf(number) * Fz), 2) + pow((Cs * lats) / (3 * wheel_cf(number) * Fz), 2))
 
-func brushLong(longs, lats, Fz):
+func brushLong(longs, lats, Fz, number):
 	if longs == null or lats == null:
 		return 0
 	
-	wav = wave(longs, lats, Fz)
+	wav = wave(longs, lats, Fz, number)
 	
-	if wav < 1: return Cs * longs * pow(1 - wav, 2) + (longs / (sqrt(pow(longs, 2) + pow(lats, 2)))) * wheel_cf() * Fz *pow(wav, 2) * (3 - ( 2 * wav))
-	else: return (longs / sqrt(pow(longs, 2) + pow(lats, 2))) * wheel_cf() * Fz
+	if wav < 1: return Cs * longs * pow(1 - wav, 2) + (longs / (sqrt(pow(longs, 2) + pow(lats, 2)))) * wheel_cf(number) * Fz *pow(wav, 2) * (3 - ( 2 * wav))
+	else: return (longs / sqrt(pow(longs, 2) + pow(lats, 2))) * wheel_cf(number) * Fz
 
-func brushLat(longs, lats, Fz):
+func brushLat(longs, lats, Fz, number):
 	if longs == null or lats == null:
 		return 0
 	
-	wav = wave(longs, lats, Fz)
+	wav = wave(longs, lats, Fz, number)
 	
-	if wav < 1: return Ca * lats * pow(1 - wav, 2) + (lats / (sqrt(pow(longs, 2) + pow(lats, 2)))) * wheel_cfy() * Fz * pow(wav, 2) * (3 - ( 2 * wav))
-	else: return (lats / sqrt(pow(longs, 2) + pow(lats, 2))) * wheel_cfy() * Fz
+	if wav < 1: return Ca * lats * pow(1 - wav, 2) + (lats / (sqrt(pow(longs, 2) + pow(lats, 2)))) * wheel_cfy(number) * Fz * pow(wav, 2) * (3 - ( 2 * wav))
+	else: return (lats / sqrt(pow(longs, 2) + pow(lats, 2))) * wheel_cfy(number) * Fz
 
 
 var traction_factor = [1, 1, 1, 1]
 
-func wheel_cf():
-	return CF
+func wheel_cf(number):
+	return CF * traction_factor[number]
 
 
-func wheel_cfy():
-	return CFy
+func wheel_cfy(number):
+	return CFy * traction_factor[number]
 
 var selection = 0
 
