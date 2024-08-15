@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://crwjjwi3v1awd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6dn4c"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.0
+clearcoat_enabled = true
+
+[resource]
+next_pass = SubResource("StandardMaterial3D_6dn4c")
+cull_mode = 2
+albedo_color = Color(1, 0.333333, 0, 1)
+metallic = 1.0
+roughness = 0.6
+clearcoat_enabled = true

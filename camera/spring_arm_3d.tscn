@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://f4w5f7r2djix"]
+
+[ext_resource type="Script" path="res://camera model/camera_model_springarm.gd" id="1_lacjm"]
+
+[sub_resource type="SeparationRayShape3D" id="3"]
+
+[sub_resource type="Curve" id="4"]
+_data = [Vector2(0, 0), 0.0, 4.10938, 0, 0, Vector2(0.342466, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="SpringArm3D" type="SpringArm3D" node_paths=PackedStringArray("camera")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+shape = SubResource("3")
+spring_length = 4.0
+script = ExtResource("1_lacjm")
+speed_curve = SubResource("4")
+offester = 1.5
+camera = NodePath("Camera3D")
+camera_rot_speed = 250.0
+min_speed = 15.0
+min_fov = 47.5
+max_speed = 300.0
+max_fov = 120.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+far = 24000.0

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://pe40733vi8w7"]
+
+[ext_resource type="Script" path="res://camera model/pitch handler.gd" id="1"]
+[ext_resource type="Script" path="res://camera model/yaw handler.gd" id="2"]
+[ext_resource type="Script" path="res://camera model/camera_model.gd" id="3"]
+[ext_resource type="PackedScene" uid="uid://f4w5f7r2djix" path="res://camera/spring_arm_3d.tscn" id="4_ff81r"]
+
+[sub_resource type="Curve" id="1"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_lrx28"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="camera model full" type="Node3D"]
+process_mode = 1
+
+[node name="pitch handler" type="Node3D" parent="."]
+script = ExtResource("1")
+
+[node name="yaw handler" type="Node3D" parent="."]
+script = ExtResource("2")
+curve = SubResource("1")
+
+[node name="camera model" type="Node3D" parent="."]
+script = ExtResource("3")
+active = true
+speed_curve = SubResource("Curve_lrx28")
+offset = Vector3(0, 0.275, 0)
+lerp_speed = 50.0
+
+[node name="SpringArm3D" parent="camera model" instance=ExtResource("4_ff81r")]
